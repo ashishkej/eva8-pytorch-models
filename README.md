@@ -3,11 +3,13 @@
 Main repository containing different models, main file used for training the models and utils file for miscelleneous functions like visualization, GradCAM, debugging etc. 
 
 ## Directory Structure
+```
 |── models
 │   └── resnet.py  
 ├── utils.py
 ├── main.py
 └── README.md
+```
 
 ### Models dir
 Contains different models for e.g currently resnet.py contains Basic ResNet18/34 models
