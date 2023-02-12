@@ -218,7 +218,7 @@ def get_mean_and_std(exp_data):
     print(' - Mean:', np.mean(exp_data, axis=(0,1,2)) / 255.)
     print(' - Std:', np.std(exp_data, axis=(0,1,2)) / 255.)
     print(' - Var:', np.var(exp_data, axis=(0,1,2)) / 255.)
-    return np.mean(exp_data, axis=(0,1,2)) / 255.), np.std(exp_data, axis=(0,1,2)) / 255.)
+    return np.mean(exp_data, axis=(0,1,2)) / 255., np.std(exp_data, axis=(0,1,2)) / 255.
 
 class AlbumentationImageDataset(Dataset):
     def __init__(self, image_list, train= True):
