@@ -210,19 +210,15 @@ def plot_learning_curves(history=None, from_txt=False, plot_lr_trend=False):
         plt.show()
 
 
-def get_mean_and_std(dataset):
-    '''Compute the mean and std value of dataset.'''
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=2)
-    mean = torch.zeros(3)
-    std = torch.zeros(3)
-    print('==> Computing mean and std..')
-    for inputs, targets in dataloader:
-        for i in range(3):
-            mean[i] += inputs[:,i,:,:].mean()
-            std[i] += inputs[:,i,:,:].std()
-    mean.div_(len(dataset))
-    std.div_(len(dataset))
-    return mean, std
+def get_mean_and_std(exp_data):
+    '''Calculate the mean and std for normalization'''
+    print(' - Dataset Numpy Shape:', exp_data.shape)
+    print(' - Min:', np.min(exp_data, axis=(0,1,2)) / 255.)
+    print(' - Max:', np.max(exp_data, axis=(0,1,2)) / 255.)
+    print(' - Mean:', np.mean(exp_data, axis=(0,1,2)) / 255.)
+    print(' - Std:', np.std(exp_data, axis=(0,1,2)) / 255.)
+    print(' - Var:', np.var(exp_data, axis=(0,1,2)) / 255.)
+    return np.mean(exp_data, axis=(0,1,2)) / 255.), np.std(exp_data, axis=(0,1,2)) / 255.)
 
 class AlbumentationImageDataset(Dataset):
   def __init__(self, image_list, train= True):
