@@ -14,54 +14,44 @@ def train(model, device, train_loader, optimizer):
     Returns:
         float: accuracy and loss values
     """
-  model.train()
-  pbar = tqdm(train_loader)
-  correct = 0
-  processed = 0
-  num_loops = 0
-  train_loss = 0
-  for batch_idx, (data, target) in enumerate(pbar):
-    # get samples
-    data, target = data.to(device), target.to(device)
+    model.train()
+    pbar = tqdm(train_loader)
+    correct = 0
+    processed = 0
+    num_loops = 0
+    train_loss = 0
+    for batch_idx, (data, target) in enumerate(pbar):
+            # get samples
+        data, target = data.to(device), target.to(device)
 
-    # Init
-    optimizer.zero_grad()
-    # In PyTorch, we need to set the gradients to zero before starting to do backpropragation because PyTorch 
-    # accumulates the gradients on subsequent backward passes. Because of this, when you start your training loop, 
-    # ideally you should zero out the gradients so that you do the parameter update correctly.
+        # Init
+        optimizer.zero_grad()
+        # In PyTorch, we need to set the gradients to zero before starting to do backpropragation because PyTorch 
+        # accumulates the gradients on subsequent backward passes. Because of this, when you start your training loop, 
+        # ideally you should zero out the gradients so that you do the parameter update correctly.
 
-    # Predict
-    y_pred = model(data)
+        # Predict
+        y_pred = model(data)
 
-    # Calculate loss
-    loss = F.nll_loss(y_pred, target)
-    l1 = 0
-    lambda_l1 = 0.01
-    if l1:
-      for p in model.parameter():
-        l1 = l1 + p.abs().sum()
-    
-    loss = loss + lambda_l1*l1
+        # Calculate loss
+        loss = F.nll_loss(y_pred, target)
 
-    # Backpropagation
-    loss.backward()
-    optimizer.step()
+        # Backpropagation
+        loss.backward()
+        optimizer.step()
 
-    train_loss += loss.item()
+        train_loss += loss.item()
+        
+        # Update pbar-tqdm
+        
+        pred = y_pred.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+        correct += pred.eq(target.view_as(pred)).sum().item()
+        processed += len(data)
 
-    # Update LR
-    scheduler.step()
-    
-    # Update pbar-tqdm
-    
-    pred = y_pred.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-    correct += pred.eq(target.view_as(pred)).sum().item()
-    processed += len(data)
+        num_loops += 1
+        pbar.set_description(desc= f'Batch_id={batch_idx} Loss={train_loss/num_loops:.5f} Accuracy={100*correct/processed:0.2f}')
 
-    num_loops += 1
-    pbar.set_description(desc= f'Batch_id={batch_idx} Loss={train_loss/num_loops:.5f} Accuracy={100*correct/processed:0.2f}')
-  
-  return 100*correct/processed, train_loss/num_loops
+    return 100*correct/processed, train_loss/num_loops
 
 def test(model, device, test_loader):
     """Model Testing Loop
@@ -92,29 +82,31 @@ def test(model, device, test_loader):
     
     return 100. * correct / len(test_loader.dataset), test_loss
 
-def fit_model(net, NUM_EPOCHS=20, device):
+def fit_model(net, device, train_loader, test_loader, NUM_EPOCHS=20):
     """Train+Test Model using train and test functions
     Args:
         net : torch model 
         NUM_EPOCHS : No. of Epochs
         device : "cpu" or "cuda" gpu 
+        train_loader: Train set Dataloader with Augmentations
+        test_loader: Test set Dataloader with Normalised images
 
     Returns:
         model, Tran Test Accuracy, Loss
     """
-  training_acc, training_loss, testing_acc, testing_loss = list(), list(), list(), list()
-  
-  
-  optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    training_acc, training_loss, testing_acc, testing_loss = list(), list(), list(), list()
 
-  for epoch in range(1,NUM_EPOCHS+1):
-      print("EPOCH:", epoch)
-      train_acc, train_loss = train(net, device, train_loader, optimizer)
-      test_acc, test_loss = test(net, device, test_loader)
 
-      training_acc.append(train_acc)
-      training_loss.append(train_loss)
-      testing_acc.append(test_acc)
-      testing_loss.append(test_loss)
-      
-  return net, (training_acc, training_loss, testing_acc, testing_loss)
+    optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+
+    for epoch in range(1,NUM_EPOCHS+1):
+        print("EPOCH:", epoch)
+        train_acc, train_loss = train(net, device, train_loader, optimizer)
+        test_acc, test_loss = test(net, device, test_loader)
+
+        training_acc.append(train_acc)
+        training_loss.append(train_loss)
+        testing_acc.append(test_acc)
+        testing_loss.append(test_loss)
+        
+    return net, (training_acc, training_loss, testing_acc, testing_loss)
