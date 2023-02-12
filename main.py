@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 from tqdm import tqdm
-
+import torch.nn.functional as F
 
 def train(model, device, train_loader, optimizer):
     """Model Training Loop
