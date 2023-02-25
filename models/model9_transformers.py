@@ -22,9 +22,9 @@ class ULTIMUS(nn.Module):
     out = nn.Linear(8,48)(Z)
     return out
 
-class MyResnet(nn.Module):
+class Vit(nn.Module):
     def __init__(self):
-        super(MyResnet, self).__init__()
+        super(Vit, self).__init__()
 
         self.layer1 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=16, kernel_size=(3, 3), bias=False),
