@@ -4,7 +4,7 @@ import torch
 from tqdm import tqdm
 import torch.nn.functional as F
 
-def train(model, device, train_loader, optimizer):
+def train(model, device, train_loader, optimizer,scheduler):
     """Model Training Loop
     Args:
         model : torch model 
@@ -40,6 +40,9 @@ def train(model, device, train_loader, optimizer):
         optimizer.step()
 
         train_loss += loss.item()
+
+        # Update LR
+        scheduler.step()
         
         # Update pbar-tqdm
         
