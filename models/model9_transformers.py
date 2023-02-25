@@ -48,7 +48,11 @@ class Vit(nn.Module):
 
     def forward(self, x):
         x =  self.layer1(x)
+        print(x.shape)
         x = self.gap(x)
+        print(x.shape)
+        x = x.view(x.size(0), -1)
+        print(x.shape)
         x = self.u1(x)
         x = self.u2(x)
         x = self.u3(x)
