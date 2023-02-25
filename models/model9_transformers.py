@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
 
 
 #ULTIMUS 
@@ -15,7 +14,7 @@ class ULTIMUS(nn.Module):
     Q = nn.Linear(48,8)(x)
     V = nn.Linear(48,8)(x)
 
-    scores = torch.matmul(Q.transpose(-2, -1), K) /  math.sqrt(8)
+    scores = torch.matmul(Q.transpose(-2, -1), K) /  torch.sqrt(8)
 
     AM = F.softmax(scores, dim=-1)
     Z = torch.matmul(scores, V)
