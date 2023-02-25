@@ -13,20 +13,18 @@ class ULTIMUS(nn.Module):
     self.z = nn.Linear(8,48)
 
   def forward(self, x):
-    print(x.shape)
     K = self.k(x)
     Q = self.q(x)
     V = self.v(x)
-    print(V.shape)
-    print(V)
 
-    scores = torch.matmul(Q.transpose(-2, -1), K) /  torch.sqrt(torch.tensor(8))
-    print(scores)
+    scores = torch.bmm(Q.transpose(-2, -1), K) /  torch.sqrt(torch.tensor(8))
+    print(scores.shape)
 
     AM = F.softmax(scores, dim=-1)
-    Z = torch.matmul(scores, V)
-    print(Z)
+    Z = torch.bmm(scores, V)
+    print(Z.shape)
     out = self.z(Z)
+    print(out.shape)
     return out
 
 class Vit(nn.Module):
@@ -56,11 +54,8 @@ class Vit(nn.Module):
 
     def forward(self, x):
         x =  self.layer1(x)
-        print(x.shape)
         x = self.gap(x)
-        print(x.shape)
         x = x.view(x.size(0), -1)
-        print(x.shape)
         x = self.u1(x)
         x = self.u2(x)
         x = self.u3(x)
