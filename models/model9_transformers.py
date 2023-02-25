@@ -10,14 +10,21 @@ class ULTIMUS(nn.Module):
 
 
   def forward(self, x):
+    print(x.shape)
     K = nn.Linear(48,8)(x)
     Q = nn.Linear(48,8)(x)
     V = nn.Linear(48,8)(x)
+    print(V.shape)
+    print(V)
 
     scores = torch.matmul(Q.transpose(-2, -1), K) /  torch.sqrt(8).to('cuda')
+    print(scores)
+    scores = scores.to('cuda')
+    print(scores)
 
     AM = F.softmax(scores, dim=-1)
     Z = torch.matmul(scores, V)
+    print(Z)
     out = nn.Linear(8,48)(Z)
     return out
 
