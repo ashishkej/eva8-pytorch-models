@@ -7,13 +7,16 @@ import torch.nn.functional as F
 class ULTIMUS(nn.Module):
   def __init__(self):
     super(ULTIMUS, self).__init__()
-
+    self.k = nn.Linear(48,8)
+    self.q = nn.Linear(48,8)
+    self.v = nn.Linear(48,8)
+    self.z = nn.Linear(8,48)
 
   def forward(self, x):
     print(x.shape)
-    K = nn.Linear(48,8)(x)
-    Q = nn.Linear(48,8)(x)
-    V = nn.Linear(48,8)(x)
+    K = self.k(x)
+    Q = self.q(x)
+    V = self.v(x)
     print(V.shape)
     print(V)
 
@@ -25,7 +28,7 @@ class ULTIMUS(nn.Module):
     AM = F.softmax(scores, dim=-1)
     Z = torch.matmul(scores, V)
     print(Z)
-    out = nn.Linear(8,48)(Z)
+    out = self.z(Z)
     return out
 
 class Vit(nn.Module):
