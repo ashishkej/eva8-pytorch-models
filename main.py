@@ -16,6 +16,7 @@ def train(model, device, train_loader, optimizer,scheduler):
     """
     model.train()
     pbar = tqdm(train_loader)
+    lr_trend = []
     correct = 0
     processed = 0
     num_loops = 0
@@ -39,10 +40,12 @@ def train(model, device, train_loader, optimizer,scheduler):
         loss.backward()
         optimizer.step()
 
-        train_loss += loss.item()
+        if scheduler:
+            if not isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+                scheduler.step()
+                lr_trend.append(scheduler.get_last_lr()[0])
 
-        # Update LR
-        scheduler.step()
+        train_loss += loss.item()
         
         # Update pbar-tqdm
         
@@ -53,7 +56,7 @@ def train(model, device, train_loader, optimizer,scheduler):
         num_loops += 1
         pbar.set_description(desc= f'Batch_id={batch_idx} Loss={train_loss/num_loops:.5f} Accuracy={100*correct/processed:0.2f}')
 
-    return 100*correct/processed, train_loss/num_loops
+    return 100*correct/processed, train_loss/num_loops, lr_trend
 
 def test(model, device, test_loader):
     """Model Testing Loop
@@ -98,17 +101,18 @@ def fit_model(net, device, train_loader, test_loader, optimizer, scheduler, NUM_
     """
     training_acc, training_loss, testing_acc, testing_loss = list(), list(), list(), list()
 
-
+    lr_trend = []
     #optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     for epoch in range(1,NUM_EPOCHS+1):
-        print("EPOCH:", epoch)
-        train_acc, train_loss = train(net, device, train_loader, optimizer)
+        print("EPOCH: {} (LR: {})".format(epoch, optimizer.param_groups[0]['lr']))
+        train_acc, train_loss, lr_hist = train(net, device, train_loader, optimizer,scheduler)
         test_acc, test_loss = test(net, device, test_loader)
 
         training_acc.append(train_acc)
         training_loss.append(train_loss)
         testing_acc.append(test_acc)
         testing_loss.append(test_loss)
+        lr_trend.extend(lr_hist)
         
-    return net, (training_acc, training_loss, testing_acc, testing_loss)
+    return net, (training_acc, training_loss, testing_acc, testing_loss, lr_trend)
