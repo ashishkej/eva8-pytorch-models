@@ -20,9 +20,7 @@ class ULTIMUS(nn.Module):
     print(V.shape)
     print(V)
 
-    scores = torch.matmul(Q.transpose(-2, -1), K) /  torch.sqrt(8).to('cuda')
-    print(scores)
-    scores = scores.to('cuda')
+    scores = torch.matmul(Q.transpose(-2, -1), K) /  torch.sqrt(torch.tensor(8))
     print(scores)
 
     AM = F.softmax(scores, dim=-1)
