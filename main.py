@@ -40,10 +40,8 @@ def train(model, device, train_loader, optimizer,scheduler):
         loss.backward()
         optimizer.step()
 
-        if scheduler:
-            if not isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
-                scheduler.step()
-                lr_trend.append(scheduler.get_last_lr()[0])
+        scheduler.step()
+        lr_trend.append(scheduler.get_last_lr()[0])
 
         train_loss += loss.item()
         
