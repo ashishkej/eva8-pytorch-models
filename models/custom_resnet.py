@@ -23,9 +23,9 @@ class ResBlock(nn.Module):
     x = self.resblock(x)
     return x
 
-class Net4(nn.Module):
+class MyResnet(nn.Module):
     def __init__(self):
-        super(Net4, self).__init__()
+        super(MyResnet, self).__init__()
 
         self.preplayer = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=64, kernel_size=(3, 3), padding=1, bias=False),
@@ -62,7 +62,6 @@ class Net4(nn.Module):
 
     def forward(self, x):
         x =  self.preplayer(x)
-        #print(x.shape)
         x1 =  self.layer1_X(x)
         R1 = self.layer1_R(x1)
         x2 = x1 + R1
