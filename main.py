@@ -32,7 +32,6 @@ def train(model, device, train_loader, optimizer):
 
         # Predict
         y_pred = model(data)
-        y_pred = F.log_softmax(y_pred, dim=-1)
         # Calculate loss
         loss = F.nll_loss(y_pred, target)
 
@@ -69,7 +68,6 @@ def test(model, device, test_loader):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            output = F.log_softmax(output, dim=-1)
             test_loss += F.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()

@@ -73,6 +73,6 @@ class MyResnet(nn.Module):
         out = x4.view(x4.size(0), -1)
         out = self.linear(out)
 
-        return out
+        return F.log_softmax(out, dim=-1)
 
 
