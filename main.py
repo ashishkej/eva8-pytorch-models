@@ -84,7 +84,7 @@ def test(model, device, test_loader):
     
     return 100. * correct / len(test_loader.dataset), test_loss
 
-def fit_model(net, device, train_loader, test_loader, NUM_EPOCHS=20):
+def fit_model(net, device, train_loader, test_loader, optimizer, scheduler, NUM_EPOCHS=20):
     """Train+Test Model using train and test functions
     Args:
         net : torch model 
@@ -99,7 +99,7 @@ def fit_model(net, device, train_loader, test_loader, NUM_EPOCHS=20):
     training_acc, training_loss, testing_acc, testing_loss = list(), list(), list(), list()
 
 
-    optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    #optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     for epoch in range(1,NUM_EPOCHS+1):
         print("EPOCH:", epoch)
