@@ -5,7 +5,9 @@ Main repository containing different models, main file used for training the mod
 ## Directory Structure
 ```
 |── models
-│   └── resnet.py  
+│       ├── resnet.py 
+|       ├── custom_resnet.py 
+|       └── model9_transformers.py
 ├── utils.py
 ├── main.py
 └── README.md
