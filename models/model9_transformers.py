@@ -14,21 +14,14 @@ class ULTIMUS(nn.Module):
 
   def forward(self, x):
     K = torch.unsqueeze(self.k(x),-2)
-    print(K.shape)
     Q = torch.unsqueeze(self.q(x),-1)
-    print(Q.shape)
     V = torch.unsqueeze(self.v(x),-1)
-    print(V.shape)
 
     scores = torch.bmm(Q, K) /  torch.sqrt(torch.tensor(8))
-    print(scores.shape)
 
     AM = F.softmax(scores, dim=-1)
-    print(AM.shape)
     Z = torch.squeeze(torch.bmm(AM, V),-1)
-    print(Z.shape)
     out = self.z(Z)
-    print(out.shape)
     return out
 
 class Vit(nn.Module):
