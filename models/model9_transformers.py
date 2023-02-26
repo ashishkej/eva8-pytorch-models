@@ -13,11 +13,11 @@ class ULTIMUS(nn.Module):
     self.z = nn.Linear(8,48)
 
   def forward(self, x):
-    K = torch.unsquueze(self.k(x),-2)
+    K = torch.unsqueeze(self.k(x),-2)
     print(K.shape)
     Q = torch.unsqueeze(self.q(x),-1)
     print(Q.shape)
-    V = torch.unsquuez(self.v(x),-1)
+    V = torch.unsqueeze(self.v(x),-1)
     print(V.shape)
 
     scores = torch.bmm(Q, K) /  torch.sqrt(torch.tensor(8))
