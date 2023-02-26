@@ -13,15 +13,19 @@ class ULTIMUS(nn.Module):
     self.z = nn.Linear(8,48)
 
   def forward(self, x):
-    K = self.k(x)
-    Q = self.q(x)
-    V = self.v(x)
+    K = torch.unsquueze(self.k(x),-2)
+    print(K.shape)
+    Q = torch.unsqueeze(self.q(x),-1)
+    print(Q.shape)
+    V = torch.unsquuez(self.v(x),-1)
+    print(V.shape)
 
-    scores = torch.bmm(Q.transpose(-2, -1), K) /  torch.sqrt(torch.tensor(8))
+    scores = torch.bmm(Q, K) /  torch.sqrt(torch.tensor(8))
     print(scores.shape)
 
     AM = F.softmax(scores, dim=-1)
-    Z = torch.bmm(scores, V)
+    print(AM.shape)
+    Z = torch.bmm(AM, V)
     print(Z.shape)
     out = self.z(Z)
     print(out.shape)
