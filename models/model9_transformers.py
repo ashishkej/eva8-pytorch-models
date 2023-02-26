@@ -25,7 +25,7 @@ class ULTIMUS(nn.Module):
 
     AM = F.softmax(scores, dim=-1)
     print(AM.shape)
-    Z = torch.bmm(AM, V)
+    Z = torch.squeeze(torch.bmm(AM, V),-1)
     print(Z.shape)
     out = self.z(Z)
     print(out.shape)
