@@ -169,11 +169,11 @@ class AlbumentationImageDataset(Dataset):
     def __init__(self, image_list, train= True):
         self.image_list = image_list
         self.aug = A.Compose({
-            A.Normalize((0.49139968, 0.48215841, 0.44653091), (0.24703223, 0.24348513, 0.26158784)),
             A.Sequential([A.CropAndPad(px=4, keep_size=False), #padding of 2, keep_size=True by default
                 A.RandomCrop(32,32)]),
             A.HorizontalFlip(),
             A.CoarseDropout(1, 8, 8, 1, 8, 8,fill_value=0.473363, mask_fill_value=None),
+            A.Normalize((0.49139968, 0.48215841, 0.44653091), (0.24703223, 0.24348513, 0.26158784)),
         })
 
         self.norm = A.Compose({A.Normalize((0.49139968, 0.48215841, 0.44653091), (0.24703223, 0.24348513, 0.26158784)),
